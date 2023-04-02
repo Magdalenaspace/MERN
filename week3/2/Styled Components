@@ -1,0 +1,26 @@
+<!-- To use Styled Components in your project, 
+run the following in the terminal: 
+npm install styled-components
+
+                            import React from 'react';
+                            import styled from 'styled-components';
+                            
+                            const StyledBox = styled.div`
+                                border: 1px solid lightgray;
+                                background: ${props => props.bgColor};
+                                width: ${props => props.width || '100px'};
+                                height: ${props => props.height || '100px'};
+                            `;
+                            
+                            export default StyledBox;
+
+o use the component's props to dynamically change style properties,
+ we had to provide a callback function which takes in the component's 
+ props and returns the desired value. When we return 
+ props.width || '100px', that means that the value will be 100px
+  if the value isn't specified (meaning its value is undefined) in the props. 
+const SomeOtherComponent = () => (
+                            <div>
+                                <StyledBox bgColor="blue"/>
+                                <StyledBox bgColor="red" height="200px"/>
+                            </div> -->
