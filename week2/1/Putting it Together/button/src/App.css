@@ -1,0 +1,24 @@
+body {
+  background-color: #282c34;
+  color: white;
+  padding: 40px;
+  font-family: Arial;
+  text-align: center;
+}
+
+button {
+  color: #ffffff;
+  cursor: pointer;
+  border: 1px solid hwb(117 2% 22%);
+  padding: 8px;
+  min-width: 64px;
+
+  background: transparent;
+
+  transition: all 0.1s ease-in;
+}
+
+button:hover {
+  background: hsl(117, 96%, 40%);
+  color: #ffffff;
+}
