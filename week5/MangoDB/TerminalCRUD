@@ -1,0 +1,229 @@
+test> show dbs
+
+admin    8.00 KiB
+config  12.00 KiB
+local    8.00 KiB
+
+// * ---------------------------------------------------------
+
+test> use my_first_db
+switched to db my_first_db
+// * ---------------------------------------------------------
+
+my_first_db> show collections
+my_first_db> db.createCollection('students')
+{ ok: 1 }
+db.students.insert({name: 'Toms', home_state:'Latvia', lucky_number: 4, birthday: {month: 4, day: 5, year: 1997}})
+DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("643326d07fd1bf01eff2a1a4") }
+}
+....
+
+// * ---------------------------------------------------------
+
+db.students.find().pretty()
+[
+  {
+    _id: ObjectId("643326d07fd1bf01eff2a1a4"),
+    name: 'Toms',
+    home_state: 'Latvia',
+    lucky_number: 4,
+    birthday: { month: 4, day: 5, year: 1997 }
+  },
+  {
+    _id: ObjectId("643327657fd1bf01eff2a1a6"),
+    name: 'Mery',
+    home_state: 'Texas',
+    lucky_number: 24,
+    birthday: { month: 3, day: 2, year: 1999 }
+  },
+  {
+    _id: ObjectId("643327cd7fd1bf01eff2a1a7"),
+    name: 'Ben',
+    home_state: 'Miami',
+    lucky_number: 2,
+    birthday: { month: 8, day: 2, year: 2000 }
+  },
+  {
+    _id: ObjectId("643328157fd1bf01eff2a1a8"),
+    name: 'Faust',
+    home_state: 'Russia',
+    lucky_number: 6,
+    birthday: { month: 7, day: 3, year: 2014 }
+  },
+  {
+    _id: ObjectId("6433290b7fd1bf01eff2a1a9"),
+    name: 'Jane',
+    home_state: 'Los Angeles',
+    lucky_number: 19,
+    birthday: { month: 7, day: 3, year: 2010 }
+  }
+]
+
+// * ---------------------------------------------------------
+
+my_first_db> db.students.find({home_state:'Los Angeles'})
+[
+  {
+    _id: ObjectId("6433290b7fd1bf01eff2a1a9"),
+    name: 'Jane',
+    home_state: 'Los Angeles',
+    lucky_number: 19,
+    birthday: { month: 7, day: 3, year: 2010 }
+  }
+]
+// * ---------------------------------------------------------
+
+my_first_db> db.students.find({lucky_number: {$gt: 10}})
+[
+  {
+    _id: ObjectId("643327657fd1bf01eff2a1a6"),
+    name: 'Mery',
+    home_state: 'Texas',
+    lucky_number: 24,
+    birthday: { month: 3, day: 2, year: 1999 }
+  },
+  {
+    _id: ObjectId("6433290b7fd1bf01eff2a1a9"),
+    name: 'Jane',
+    home_state: 'Los Angeles',
+    lucky_number: 19,
+    birthday: { month: 7, day: 3, year: 2010 }
+  }
+]
+
+// * ---------------------------------------------------------
+
+my_first_db>  db.students.find({lucky_number: {$lt: 10}})
+[
+  {
+    _id: ObjectId("643326d07fd1bf01eff2a1a4"),
+    name: 'Toms',
+    home_state: 'Latvia',
+    lucky_number: 4,
+    birthday: { month: 4, day: 5, year: 1997 }
+  },
+  {
+    _id: ObjectId("643327cd7fd1bf01eff2a1a7"),
+    name: 'Ben',
+    home_state: 'Miami',
+    lucky_number: 2,
+    birthday: { month: 8, day: 2, year: 2000 }
+  },
+  {
+    _id: ObjectId("643328157fd1bf01eff2a1a8"),
+    name: 'Faust',
+    home_state: 'Russia',
+    lucky_number: 6,
+    birthday: { month: 7, day: 3, year: 2014 }
+  }
+]
+// * ---------------------------------------------------------
+
+my_first_db>  db.students.find({lucky_number: {$gte:1, $lt: 10}})
+[
+  {
+    _id: ObjectId("643326d07fd1bf01eff2a1a4"),
+    name: 'Toms',
+    home_state: 'Latvia',
+    lucky_number: 4,
+    birthday: { month: 4, day: 5, year: 1997 }
+  },
+  {
+    _id: ObjectId("643327cd7fd1bf01eff2a1a7"),
+    name: 'Ben',
+    home_state: 'Miami',
+    lucky_number: 2,
+    birthday: { month: 8, day: 2, year: 2000 }
+  },
+  {
+    _id: ObjectId("643328157fd1bf01eff2a1a8"),
+    name: 'Faust',
+    home_state: 'Russia',
+    lucky_number: 6,
+    birthday: { month: 7, day: 3, year: 2014 }
+  }
+]
+// * ---------------------------------------------------------
+my_first_db> db.students.updateMany({}, {$set: {interests: ['coding', 'brunch', 'MongoDB']}})
+
+// * ---------------------------------------------------------
+my_first_db> db.students.update({name: 'Toms'}, {$push: {interests: 'Python'}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+my_first_db> db.students.update({name: 'Mery'}, {$push: {interests: 'taxes'}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+
+my_first_db> db.students.update({name: 'Mery'}, {$pull: {interests: 'taxes'}})
+// * ---------------------------------------------------------
+
+my_first_db> db.students.remove({home_state: 'Los Angeles'})
+
+DeprecationWarning: Collection.remove() is deprecated. Use deleteOne, deleteMany, findOneAndDelete, or bulkWrite.
+{ acknowledged: true, deletedCount: 1 }
+
+// * ---------------------------------------------------------
+my_first_db> db.students.remove({lucky_number: {$gt: 5}},true)
+{ acknowledged: true, deletedCount: 2 }
+
+// * ---------------------------------------------------------
+my_first_db>  db.students.updateMany({}, {$set: {number_of_belts: 0}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 2,
+  modifiedCount: 2,
+  upsertedCount: 0
+}
+// * ---------------------------------------------------------
+db.students.updateMany({home_state: 'Miami'}, {$inc: {number_of_belts: 1}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+// * ---------------------------------------------------------
+db.students.updateMany({}, {$rename: {'number_of_belts': 'belts_earned'}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 2,
+  modifiedCount: 2,
+  upsertedCount: 0
+}
+// * ---------------------------------------------------------
+my_first_db> db.students.updateMany({}, {$unset: {'lucky_number': ''}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 2,
+  modifiedCount: 2,
+  upsertedCount: 0
+}
+// * ---------------------------------------------------------
+db.students.updateMany({}, {$set: {'updated_on': Date()}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 2,
+  modifiedCount: 2,
+  upsertedCount: 0
+}
+
